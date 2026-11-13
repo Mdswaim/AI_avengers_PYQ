@@ -20,7 +20,8 @@ PYQ Bank is a student-focused web app for browsing engineering exam papers, prac
 The app has no npm package dependencies.
 
 ##web link
-https://mdswaim.github.io/AI_avengers_PYQ/
+https://mdswaim.github.io/AI_avengers_PYQ/[
+](https://mdswaim.github.io/AI_avengers_PYQBank/)
 ## Run the web app
 
 1. Download or clone this repository.
