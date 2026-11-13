@@ -525,6 +525,26 @@ function toggleDetails(id) {
   if (el) el.classList.toggle('open');
 }
 
+function toggleAnswerDetails(id, button) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const isOpen = el.classList.toggle('open');
+  button.setAttribute('aria-expanded', String(isOpen));
+  button.querySelector('span').textContent = isOpen
+    ? '🙈 Hide Answer & Solution'
+    : '💡 Show Answer & Solution';
+}
+
+function toggleCodeAnswer(id, button) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  el.hidden = !el.hidden;
+  button.setAttribute('aria-expanded', String(!el.hidden));
+  button.querySelector('span').textContent = el.hidden ? '💡 Show Answer' : '🙈 Hide Answer';
+}
+
 // Page 1: Render Dashboard
 function renderDashboard() {
   // Recent papers list
@@ -694,11 +714,16 @@ function renderQuestions() {
           <strong>Q${idx + 1}.</strong> ${q.question}
         </div>
 
-        ${q.codeSnippet ? `<div class="q-code"><pre><code>${escapeHtml(q.codeSnippet)}</code></pre></div>` : ''}
+        ${q.codeSnippet ? `
+          <button class="btn-toggle-view" aria-expanded="false" aria-controls="code-answer-${q.id}" onclick="toggleCodeAnswer('code-answer-${q.id}', this)">
+            <span>💡 Show Answer</span>
+          </button>
+          <div class="q-code" id="code-answer-${q.id}" hidden><pre><code>${escapeHtml(q.codeSnippet)}</code></pre></div>
+        ` : ''}
 
         <!-- Toggle Row for Answer and Notes -->
         <div class="q-toggle-row">
-          <button class="btn-toggle-view" onclick="toggleDetails('sol-${q.id}')">
+          <button class="btn-toggle-view" aria-expanded="false" aria-controls="sol-${q.id}" onclick="toggleAnswerDetails('sol-${q.id}', this)">
             <span>💡 Show Answer & Solution</span>
           </button>
           <button class="btn-toggle-view" onclick="toggleDetails('note-${q.id}')">
