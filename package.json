@@ -1,0 +1,12 @@
+{
+  "name": "pyq-bank-pro",
+  "version": "1.0.0",
+  "description": "Previous Year Question Bank & Exam Prep Dashboard for Engineering Students",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 3000"
+  },
+  "keywords": ["pyq", "engineering", "question-bank", "study-tracker"],
+  "author": "Antigravity",
+  "license": "MIT"
+}

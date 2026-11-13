@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PYQ Bank - Previous Year Question Bank</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Toast Notifications -->
+  <div class="toast-stack" id="toast-container"></div>
+
+  <!-- Top Navigation Bar (Clean & Simple) -->
+  <header class="navbar">
+    <div class="nav-container">
+      
+      <!-- Brand Logo -->
+      <div class="nav-brand" onclick="navigateTo('dashboard')">
+        <div class="brand-logo">🎓</div>
+        <div class="brand-name">
+          <span>PYQ Bank</span>
+          <span class="brand-tag">Student Edition</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-menu">
+        <button class="nav-tab active" data-view="dashboard" onclick="navigateTo('dashboard')">
+          <span>📊 Dashboard</span>
+        </button>
+        <button class="nav-tab" data-view="library" onclick="navigateTo('library')">
+          <span>📚 Question Papers</span>
+        </button>
+        <button class="nav-tab" data-view="questions" onclick="navigateTo('questions')">
+          <span>📝 Practice Questions</span>
+        </button>
+        <button class="nav-tab" data-view="review" onclick="navigateTo('review')">
+          <span>📌 Review Next</span>
+          <span class="tab-badge" id="nav-review-badge">0/5</span>
+        </button>
+        <button class="nav-tab" data-view="progress" onclick="navigateTo('progress')">
+          <span>📈 Progress</span>
+        </button>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="nav-actions">
+        <!-- Readiness pill -->
+        <div class="prep-pill" onclick="navigateTo('progress')" title="Click to view progress">
+          <div class="prep-dot"></div>
+          <span id="nav-progress-text">0% Done</span>
+        </div>
+
+        <!-- Sound toggle -->
+        <button class="btn-icon" id="btn-sound-toggle" onclick="toggleSound()" title="Toggle Sound">
+          <span id="sound-toggle-icon">🔊</span>
+        </button>
+
+        <!-- Theme toggle -->
+        <button class="btn-icon" id="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">
+          <span id="theme-toggle-icon">🌙</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Clean Sub-Bar: Quick Evaluation Demo for Judges -->
+  <div class="demo-bar">
+    <div class="demo-bar-inner">
+      <span class="demo-label">⚡ 1-Click Demo Scenarios:</span>
+      <div class="demo-buttons">
+        <button class="btn-demo" id="demo-step-1" onclick="EvaluationDemo.runScenario1()">
+          1️⃣ Filter & Search
+        </button>
+        <button class="btn-demo" id="demo-step-2" onclick="EvaluationDemo.runScenario2()">
+          2️⃣ Mark Practiced
+        </button>
+        <button class="btn-demo" id="demo-step-3" onclick="EvaluationDemo.runScenario3()">
+          3️⃣ 5-Slot Review Queue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Wrapper -->
+  <div class="app-body">
+    
+    <!-- ==========================================================================
+         PAGE 1: DASHBOARD
+         ========================================================================== -->
+    <main class="page active" id="view-dashboard">
+      
+      <!-- Welcome & Progress Banner -->
+      <div class="hero-banner">
+        <div class="hero-text">
+          <h2>Welcome to your PYQ Bank 👋</h2>
+          <p>Browse past engineering papers, solve questions, and mark weak topics for revision.</p>
+        </div>
+        
+        <!-- Quick Progress Display -->
+        <div class="hero-progress-card">
+          <div class="hero-prog-label">
+            <span>Overall Preparation</span>
+            <strong id="dash-prep-percent">0%</strong>
+          </div>
+          <div class="simple-progress-bar">
+            <div class="simple-progress-fill" id="dash-progress-fill" style="width: 0%;"></div>
+          </div>
+          <div class="hero-prog-sub" id="dash-progress-sub">0 of 20 questions completed</div>
+        </div>
+      </div>
+
+      <!-- 4 Quick Stats Cards -->
+      <div class="stats-row">
+        <div class="stat-box" onclick="navigateTo('library')">
+          <div class="stat-number" id="dash-stat-papers">11</div>
+          <div class="stat-title">Question Papers</div>
+          <div class="stat-sub">Semesters 1 to 8</div>
+        </div>
+        <div class="stat-box" onclick="navigateTo('questions')">
+          <div class="stat-number" id="dash-stat-questions">20</div>
+          <div class="stat-title">Total Questions</div>
+          <div class="stat-sub">Curated exam questions</div>
+        </div>
+        <div class="stat-box" onclick="navigateTo('questions')">
+          <div class="stat-number success" id="dash-stat-practiced">0</div>
+          <div class="stat-title">Questions Practised</div>
+          <div class="stat-sub">Saved in browser</div>
+        </div>
+        <div class="stat-box" onclick="navigateTo('review')">
+          <div class="stat-number warning" id="dash-stat-queue">0 / 5</div>
+          <div class="stat-title">Review Next Queue</div>
+          <div class="stat-sub">Weak topics pinned</div>
+        </div>
+      </div>
+
+      <!-- 2 Clean Panels: Recent Papers & Subject Progress -->
+      <div class="dashboard-split">
+        
+        <!-- Left: Question Papers Shortcut -->
+        <div class="simple-card">
+          <div class="simple-card-header">
+            <h3>📑 Question Papers</h3>
+            <button class="btn-text-action" onclick="navigateTo('library')">Browse All Papers &rarr;</button>
+          </div>
+          <div class="paper-quick-list" id="dash-recent-papers">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+
+        <!-- Right: Subject Progress Summary -->
+        <div class="simple-card">
+          <div class="simple-card-header">
+            <h3>🎯 Subject Progress</h3>
+            <button class="btn-text-action" onclick="navigateTo('progress')">Full Analytics &rarr;</button>
+          </div>
+          <div class="subject-simple-list" id="dash-subject-progress">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ==========================================================================
+         PAGE 2: QUESTION PAPERS (LIBRARY)
+         ========================================================================== -->
+    <main class="page" id="view-library">
+      <div class="page-top">
+        <div>
+          <h2>Question Papers Library</h2>
+          <p class="page-desc">Filter university previous-year papers by subject, semester, or year.</p>
+        </div>
+        <button class="btn-primary" onclick="navigateTo('questions')">
+          📝 Practice All Questions
+        </button>
+      </div>
+
+      <!-- Simple Filter Bar -->
+      <div class="simple-filter-bar">
+        <!-- Search Input -->
+        <div class="filter-search-box">
+          <span class="search-symbol">🔍</span>
+          <input type="text" id="lib-search-input" placeholder="Search subject, title, or topic..." oninput="handleSearch(this.value)">
+        </div>
+
+        <!-- Subject Dropdown -->
+        <div class="filter-dropdown-wrap">
+          <label>Subject:</label>
+          <select id="lib-filter-subject" onchange="setFilter('subject', this.value)">
+            <option value="All">All Subjects</option>
+            <option value="Data Structures">Data Structures (Sem 3)</option>
+            <option value="Computer Organization and Architecture">Computer Org & Architecture (Sem 3)</option>
+            <option value="UNIX and Shell Programming">UNIX and Shell Programming (Sem 3)</option>
+            <option value="Analysis and Design of Algorithms">Analysis & Design of Algorithms (Sem 4)</option>
+            <option value="Database Management Systems">Database Management Systems (Sem 4)</option>
+            <option value="Advanced Java">Advanced Java (Sem 4)</option>
+            <option value="Operating Systems">Operating Systems (Sem 5)</option>
+            <option value="Python Programming">Python Programming (Sem 5)</option>
+            <option value="Computer Networks">Computer Networks (Sem 6)</option>
+            <option value="Cloud Computing and Big Data">Cloud Computing & Big Data (Sem 7)</option>
+            <option value="Cyber Security and Cryptography">Cyber Security & Cryptography (Sem 8)</option>
+          </select>
+        </div>
+
+        <!-- Semester Dropdown -->
+        <div class="filter-dropdown-wrap">
+          <label>Semester:</label>
+          <select id="lib-filter-semester" onchange="setFilter('semester', this.value)">
+            <option value="All">All Semesters</option>
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4">Semester 4</option>
+            <option value="5">Semester 5</option>
+            <option value="6">Semester 6</option>
+            <option value="7">Semester 7</option>
+            <option value="8">Semester 8</option>
+          </select>
+        </div>
+
+        <!-- Year Dropdown -->
+        <div class="filter-dropdown-wrap">
+          <label>Year:</label>
+          <select id="lib-filter-year" onchange="setFilter('year', this.value)">
+            <option value="All">All Years</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+          </select>
+        </div>
+
+        <button class="btn-reset" onclick="resetAllFilters()">Reset Filters</button>
+      </div>
+
+      <!-- Papers Cards Grid -->
+      <div class="papers-grid" id="library-papers-grid">
+        <!-- Injected via JavaScript -->
+      </div>
+    </main>
+
+    <!-- ==========================================================================
+         PAGE 3: PRACTICE QUESTIONS (QUESTION VIEWER)
+         ========================================================================== -->
+    <main class="page" id="view-questions">
+      <div class="page-top">
+        <div>
+          <h2>Practice Questions</h2>
+          <p class="page-desc">Solve questions, inspect answers and hints, and track your practice.</p>
+        </div>
+        <div class="results-badge" id="questions-counter">Showing 20 Questions</div>
+      </div>
+
+      <!-- Active Paper Banner (if opened from a specific paper) -->
+      <div id="active-paper-banner" class="active-paper-banner" style="display: none;">
+        <span>Currently viewing questions from: <strong id="active-paper-title"></strong></span>
+        <button class="btn-small-link" onclick="clearPaperFilter()">Show All Questions</button>
+      </div>
+
+      <!-- Questions List -->
+      <div class="questions-list" id="questions-container">
+        <!-- Injected via JavaScript -->
+      </div>
+    </main>
+
+    <!-- ==========================================================================
+         PAGE 4: REVIEW NEXT (STRICT 5 SLOTS QUEUE)
+         ========================================================================== -->
+    <main class="page" id="view-review">
+      <div class="page-top">
+        <div>
+          <h2>Review Next Queue (Max 5 Questions)</h2>
+          <p class="page-desc">Pin up to 5 difficult or weak-topic questions here for quick revision. Once practiced, remove them to free slots.</p>
+        </div>
+        <div class="queue-status-pill" id="review-queue-status">
+          <span id="review-slots-badge">0 of 5 Slots Used</span>
+        </div>
+      </div>
+
+      <!-- 5 Visual Slots -->
+      <div class="slots-container" id="review-slots-container">
+        <!-- Injected via JavaScript -->
+      </div>
+    </main>
+
+    <!-- ==========================================================================
+         PAGE 5: PROGRESS TRACKER
+         ========================================================================== -->
+    <main class="page" id="view-progress">
+      <div class="page-top">
+        <div>
+          <h2>Preparation Progress Tracker</h2>
+          <p class="page-desc">Track questions practiced, completion rates, and subject coverage.</p>
+        </div>
+      </div>
+
+      <div class="progress-page-grid">
+        
+        <!-- Big Progress Card -->
+        <div class="simple-card">
+          <h3>Overall Completion</h3>
+          
+          <div class="progress-big-number">
+            <span id="prog-percent-large">0%</span>
+            <small>Exam Ready</small>
+          </div>
+
+          <div class="simple-progress-bar" style="height: 14px; margin: 1.25rem 0;">
+            <div class="simple-progress-fill" id="prog-large-fill" style="width: 0%;"></div>
+          </div>
+
+          <div class="progress-details-row">
+            <div class="prog-detail-item">
+              <span class="detail-label">Practised Questions</span>
+              <strong class="detail-val success" id="prog-count-practiced">0</strong>
+            </div>
+            <div class="prog-detail-item">
+              <span class="detail-label">Unpractised Questions</span>
+              <strong class="detail-val" id="prog-count-unpracticed">20</strong>
+            </div>
+            <div class="prog-detail-item">
+              <span class="detail-label">Total Questions</span>
+              <strong class="detail-val" id="prog-count-total">20</strong>
+            </div>
+          </div>
+
+          <div class="tip-box" style="margin-top: 1.5rem;">
+            💡 <strong>Study Strategy:</strong> Try to solve at least 2 questions daily. Use the <em>Review Next</em> queue to master difficult topics before final exams.
+          </div>
+        </div>
+
+        <!-- Subject Mastery List -->
+        <div class="simple-card">
+          <h3>Subject-by-Subject Mastery</h3>
+          <div class="subject-mastery-list" id="progress-subject-list" style="margin-top: 1rem;">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Celebration Modal -->
+  <div class="modal-backdrop" id="celebration-modal">
+    <div class="modal-card">
+      <div class="modal-icon">🎉</div>
+      <h3 id="modal-title">Well Done!</h3>
+      <p id="modal-desc">You are making consistent progress on your question bank.</p>
+      <button class="btn-primary" onclick="closeCelebrationModal()">Keep Going!</button>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
